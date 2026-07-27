@@ -1,0 +1,10 @@
+# Database
+*.db
+icecreams.db
+
+# Python virtual environments & cache
+__pycache__/
+*.pyc
+.venv/
+venv/
+.vscode/
