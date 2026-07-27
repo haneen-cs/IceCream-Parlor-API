@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍨 Ice Cream Management</title>
+    <style>
+        :root {
+            --bg-color: #FDFBF7;
+            --card-bg: #FFF8F0;
+            --primary-brown: #4A3B32;
+            --dark-brown: #2C1D11;
+            --caramel: #C88A58;
+            --caramel-hover: #A66E38;
+            --beige-border: #E6D7C3;
+            --light-beige: #F4ECE1;
+            --danger: #A94442;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--dark-brown);
+            padding: 2rem;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        header h1 {
+            color: var(--primary-brown);
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 2px solid var(--beige-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(74, 59, 50, 0.05);
+        }
+
+        h2 {
+            color: var(--primary-brown);
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--beige-border);
+            padding-bottom: 0.5rem;
+            font-size: 1.3rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.3rem;
+            font-weight: 600;
+            color: var(--primary-brown);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.6rem;
+            border: 1px solid var(--beige-border);
+            border-radius: 6px;
+            background-color: #FFF;
+            color: var(--dark-brown);
+            font-size: 0.95rem;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--caramel);
+        }
+
+        .btn {
+            background-color: var(--caramel);
+            color: white;
+            border: none;
+            padding: 0.7rem 1.2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background-color: var(--caramel-hover);
+        }
+
+        .btn-secondary {
+            background-color: var(--light-beige);
+            color: var(--primary-brown);
+            border: 1px solid var(--beige-border);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--beige-border);
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+        }
+
+        .btn-danger:hover {
+            background-color: #843230;
+        }
+
+        /* Filters Section */
+        .filter-section {
+            background-color: var(--light-beige);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: flex-end;
+        }
+
+        .filter-item {
+            flex: 1;
+            min-width: 140px;
+        }
+
+        /* Cards Display Grid */
+        .icecream-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .icecream-item {
+            background-color: white;
+            border: 1px solid var(--beige-border);
+            border-radius: 8px;
+            padding: 1rem;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .flavour-badge {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: capitalize;
+            margin-top: 0.4rem;
+        }
+
+        .flavour-chocolate { background-color: #5D4037; color: white; }
+        .flavour-vanilla { background-color: #FFF9C4; color: #5D4037; border: 1px solid #E0E0E0; }
+        .flavour-caramel { background-color: #FFE0B2; color: #E65100; }
+
+        .price-tag {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary-brown);
+            margin: 0.5rem 0;
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .actions button {
+            flex: 1;
+            padding: 0.4rem;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🍨 Sweet Scoops Parlor</h1>
+        <p>Manage your artisanal ice cream inventory</p>
+    </header>
+
+    <div class="container">
+        <!-- FORM SECTION -->
+        <div class="card">
+            <h2 id="form-title">Add Ice Cream</h2>
+            <form id="icecream-form">
+                <div class="form-group">
+                    <label for="id">ID</label>
+                    <input type="number" id="id" required placeholder="e.g. 1">
+                </div>
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" required placeholder="e.g. Fudge Crunch">
+                </div>
+                <div class="form-group">
+                    <label for="price">Price ($)</label>
+                    <input type="number" step="0.01" id="price" required placeholder="e.g. 4.50">
+                </div>
+                <div class="form-group">
+                    <label for="flavour">Flavour</label>
+                    <select id="flavour" required>
+                        <option value="chocolate">Chocolate</option>
+                        <option value="vanilla">Vanilla</option>
+                        <option value="caramel">Caramel</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn" id="submit-btn">Save Ice Cream</button>
+                <button type="button" class="btn btn-secondary" id="cancel-btn" style="display:none; margin-top: 0.5rem;" onclick="resetForm()">Cancel Edit</button>
+            </form>
+        </div>
+
+        <!-- LIST SECTION -->
+        <div>
+            <!-- FILTERS -->
+            <div class="filter-section">
+                <div class="filter-item">
+                    <label>By Flavour</label>
+                    <select id="filter-flavour">
+                        <option value="">All Flavours</option>
+                        <option value="chocolate">Chocolate</option>
+                        <option value="vanilla">Vanilla</option>
+                        <option value="caramel">Caramel</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <button class="btn btn-secondary" onclick="filterByFlavour()">Filter Flavour</button>
+                </div>
+
+                <div class="filter-item">
+                    <label>Max Price ($)</label>
+                    <input type="number" step="0.1" id="filter-price" placeholder="Max price">
+                </div>
+                <div class="filter-item">
+                    <button class="btn btn-secondary" onclick="filterByPrice()">Filter Price</button>
+                </div>
+
+                <div class="filter-item" style="flex: 0;">
+                    <button class="btn" onclick="loadAllIceCreams()">Reset</button>
+                </div>
+            </div>
+
+            <!-- INVENTORY GRID -->
+            <div class="card">
+                <h2>Inventory</h2>
+                <div id="icecream-container" class="icecream-grid">
+                    <!-- Items rendered here dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API Base URL (empty string means it uses current host domain/port)
+        const API_BASE = "";
+        let isEditing = false;
+
+        document.addEventListener("DOMContentLoaded", () => {
+            loadAllIceCreams();
+
+            document.getElementById("icecream-form").addEventListener("submit", async (e) => {
+                e.preventDefault();
+                await handleFormSubmit();
+            });
+        });
+
+        // 1. GET ALL
+        async function loadAllIceCreams() {
+            try {
+                const res = await fetch(`${API_BASE}/icecreams/getall`);
+                const data = await res.json();
+                renderItems(data.data || []);
+            } catch (err) {
+                console.error("Error fetching items:", err);
+            }
+        }
+
+        // 2. FILTER BY FLAVOUR
+        async function filterByFlavour() {
+            const flavour = document.getElementById("filter-flavour").value;
+            if (!flavour) return loadAllIceCreams();
+
+            try {
+                const res = await fetch(`${API_BASE}/icecreams/icecreams/flavour/${flavour}`);
+                const data = await res.json();
+                renderItems(data.data || []);
+            } catch (err) {
+                console.error("Error filtering flavour:", err);
+            }
+        }
+
+        // 3. FILTER BY PRICE
+        async function filterByPrice() {
+            const price = document.getElementById("filter-price").value;
+            if (!price) return loadAllIceCreams();
+
+            try {
+                const res = await fetch(`${API_BASE}/icecreams/icecreams/price/${price}`);
+                const data = await res.json();
+                renderItems(data.data || []);
+            } catch (err) {
+                console.error("Error filtering price:", err);
+            }
+        }
+
+        // 4. CREATE / UPDATE
+        async function handleFormSubmit() {
+            const id = parseInt(document.getElementById("id").value);
+            const payload = {
+                id: id,
+                name: document.getElementById("name").value,
+                price: parseFloat(document.getElementById("price").value),
+                flavour: document.getElementById("flavour").value
+            };
+
+            const endpoint = isEditing ? `${API_BASE}/icecreams/update/${id}` : `${API_BASE}/icecreams/create`;
+            const method = isEditing ? 'PUT' : 'POST';
+
+            try {
+                const res = await fetch(endpoint, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (res.ok) {
+                    resetForm();
+                    loadAllIceCreams();
+                } else {
+                    alert("Error saving ice cream!");
+                }
+            } catch (err) {
+                console.error("Error saving:", err);
+            }
+        }
+
+        // 5. DELETE
+        async function deleteIceCream(id) {
+            if (!confirm(`Are you sure you want to delete Ice Cream #${id}?`)) return;
+
+            try {
+                const res = await fetch(`${API_BASE}/icecreams/delete/${id}`, { method: 'DELETE' });
+                if (res.ok) {
+                    loadAllIceCreams();
+                }
+            } catch (err) {
+                console.error("Error deleting:", err);
+            }
+        }
+
+        // UI HELPER: EDIT MODE
+        function startEdit(id, name, price, flavour) {
+            isEditing = true;
+            document.getElementById("form-title").innerText = "Edit Ice Cream";
+            document.getElementById("id").value = id;
+            document.getElementById("id").disabled = true; // Prevents changing key primary ID during edit
+            document.getElementById("name").value = name;
+            document.getElementById("price").value = price;
+            document.getElementById("flavour").value = flavour;
+            document.getElementById("submit-btn").innerText = "Update Ice Cream";
+            document.getElementById("cancel-btn").style.display = "block";
+        }
+
+        function resetForm() {
+            isEditing = false;
+            document.getElementById("icecream-form").reset();
+            document.getElementById("form-title").innerText = "Add Ice Cream";
+            document.getElementById("id").disabled = false;
+            document.getElementById("submit-btn").innerText = "Save Ice Cream";
+            document.getElementById("cancel-btn").style.display = "none";
+        }
+
+        // UI HELPER: RENDER CARDS
+        function renderItems(items) {
+            const container = document.getElementById("icecream-container");
+            container.innerHTML = "";
+
+            if (items.length === 0) {
+                container.innerHTML = "<p>No ice creams found.</p>";
+                return;
+            }
+
+            items.forEach(item => {
+                const card = document.createElement("div");
+                card.className = "icecream-item";
+                card.innerHTML = `
+                    <div>
+                        <small>ID: #${item.id}</small>
+                        <h3 style="margin-top: 0.2rem;">${item.name}</h3>
+                        <div class="price-tag">$${parseFloat(item.price).toFixed(2)}</div>
+                        <span class="flavour-badge flavour-${item.flavour}">${item.flavour}</span>
+                    </div>
+                    <div class="actions">
+                        <button class="btn btn-secondary" onclick="startEdit(${item.id}, '${item.name}', ${item.price}, '${item.flavour}')">Edit</button>
+                        <button class="btn btn-danger" onclick="deleteIceCream(${item.id})">Delete</button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+    </script>
+</body>
+</html>
